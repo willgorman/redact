@@ -91,6 +91,14 @@ func (inq *Inquiry) redact(copy, original reflect.Value) {
 		copy.Set(reflect.MakeMap(original.Type()))
 		for _, key := range original.MapKeys() {
 			if inq.isSecretField(key.Interface().(string)) {
+				// if the original value is a zero value we can keep the key
+				// since there's nothing redactible there
+				originalValue := original.MapIndex(key)
+				if originalValue.CanInterface() && originalValue.Elem().IsZero() {
+					copy.SetMapIndex(key, originalValue)
+				} else {
+					copy.SetMapIndex(key, reflect.ValueOf("*********"))
+				}
 				continue
 			}
 			originalValue := original.MapIndex(key)
