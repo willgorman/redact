@@ -69,6 +69,9 @@ func (inq *Inquiry) redact(copy, original reflect.Value) {
 
 	case reflect.Interface:
 		originalValue := original.Elem()
+		if !originalValue.IsValid() {
+			return
+		}
 		copyValue := reflect.New(originalValue.Type()).Elem()
 		inq.redact(copyValue, originalValue)
 		copy.Set(copyValue)
@@ -103,7 +106,6 @@ func (inq *Inquiry) redact(copy, original reflect.Value) {
 	default:
 		copy.Set(original)
 	}
-
 }
 
 // Redact redacts the inquired data

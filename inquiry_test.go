@@ -8,7 +8,6 @@ import (
 )
 
 func TestInquiryRedact(t *testing.T) {
-
 	samples := []struct {
 		original, expected string
 	}{
@@ -54,6 +53,7 @@ func TestInquiryRedact(t *testing.T) {
 	]
 }`,
 		},
+		{`{"name": null}`, `{"name": null}`},
 	}
 
 	inq := New()
